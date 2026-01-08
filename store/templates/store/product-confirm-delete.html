@@ -1,0 +1,6 @@
+<h1>Czy na pewno chcesz usunąć {{ shirt.name }}?</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">TAK, USUŃ</button>
+</form>
+<a href="{% url 'product-list-html' %}">Nie, wróć</a>
