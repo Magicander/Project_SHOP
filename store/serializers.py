@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Brand, Category, SIZES, FABRIC_TYPES, GENDER, COLORS
+from .models import Product, Brand, Category, Review, SIZES, FABRIC_TYPES, GENDER, COLORS
 from django.contrib.auth.models import User
 
 def validate_letters(value):
@@ -7,6 +7,13 @@ def validate_letters(value):
     if not clean_value.isalpha():
         raise serializers.ValidationError("Pole może zawierać tylko litery!")
     return value
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'rating', 'content', 'created_at']
 
 class ProductSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -20,6 +27,11 @@ class ProductSerializer(serializers.Serializer):
     brand = serializers.PrimaryKeyRelatedField(queryset=Brand.objects.all(), allow_null=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), allow_null=True)
     owner = serializers.ReadOnlyField(source='owner.username')
+    image = serializers.ImageField(required=False, allow_null=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
+    colors = serializers.ChoiceField(choices=COLORS, default='B')
+    description = serializers.CharField(required=False, allow_null=True)
+
 
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
@@ -38,7 +50,7 @@ class ProductSerializer(serializers.Serializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
-        fields = ['id', 'name', 'country', 'website']
+        fields = ['id', 'name', 'country']
 
     def validate(self, data):
         name = data.get('name')

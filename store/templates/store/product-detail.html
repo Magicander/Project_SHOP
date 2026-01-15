@@ -1,4 +1,224 @@
-<h1>{{ shirt.name }}</h1>
-<p><strong>Cena:</strong> {{ shirt.price }} PLN</p>
-<p><strong>Opis kategorii:</strong> {{ shirt.category.description }}</p>
-<a href="{% url 'product-list-html' %}">Wróć do listy</a>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły: {{ product.name }}</title>
+    <style>
+        /* RESET I BAZA */
+        * { box-sizing: border-box; }
+        body { 
+            background: #008080; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            font-family: 'MS Sans Serif', sans-serif; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+        
+        /* GŁÓWNE OKNO */
+        .window { 
+            background: #c0c0c0; 
+            border: 2px solid #fff; 
+            border-right-color: #404040; 
+            border-bottom-color: #404040; 
+            width: 900px; /* Szerokie okno */
+            height: 600px; 
+            padding: 4px; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
+        }
+        
+        /* ZAKŁADKI */
+        .tabs { display: flex; height: 25px; margin-top: 5px; padding-left: 5px; }
+        .tab { 
+            background: #c0c0c0; 
+            border: 1px solid #fff; 
+            border-right-color: #404040; 
+            border-bottom: 0; 
+            padding: 4px 12px; 
+            margin-right: 2px; 
+            position: relative; 
+            top: 2px; 
+            z-index: 10; 
+            font-size: 12px;
+        }
+        
+        /* GŁÓWNY OBSZAR TREŚCI */
+        .content-box { 
+            background: #c0c0c0; 
+            border: 2px solid #fff; 
+            border-right-color: #404040; 
+            border-bottom-color: #404040; 
+            border-top-color: #fff; 
+            padding: 0; /* Padding zerowy, bo używamy tabeli */
+            flex-grow: 1; 
+            position: relative; 
+            z-index: 1; 
+            overflow: hidden;
+            display: flex; /* WAŻNE */
+        }
+
+        /* UKŁAD TABELARYCZNY (GWARANTUJE PODZIAŁ PIONOWY) */
+        .layout-table {
+            width: 100%;
+            height: 100%;
+            display: flex; /* Flexbox zamiast starej tabeli HTML */
+        }
+
+        /* LEWA STRONA - PRODUKT */
+        .left-panel {
+            width: 45%; /* Mniej niż połowa */
+            padding: 15px;
+            border-right: 2px groove #fff;
+            display: flex;
+            flex-direction: column;
+            background: #c0c0c0;
+        }
+
+        /* PRAWA STRONA - RECENZJE */
+        .right-panel {
+            width: 55%; /* Więcej miejsca na recenzje */
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background: #c0c0c0;
+            overflow: hidden;
+        }
+
+        /* ELEMENTY RETRO */
+        .img-container {
+            width: 100%; height: 200px; 
+            background: #808080; border: 2px inset #fff; 
+            display: flex; align-items: center; justify-content: center; 
+            margin-bottom: 10px;
+        }
+        
+        .prop-row { display: flex; margin-bottom: 8px; font-size: 12px; align-items: center; }
+        .prop-label { width: 80px; text-align: right; padding-right: 10px; }
+        .prop-value { background: #fff; border: 1px inset #fff; padding: 2px 5px; flex-grow: 1; font-weight: bold;}
+
+        .btn { 
+            background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; 
+            padding: 5px 15px; text-decoration: none; color: black; font-size: 12px; cursor: pointer; display: inline-block; text-align: center;
+        }
+        .btn:active { border-color: #404040 #fff #fff #404040; transform: translate(1px, 1px); }
+
+        /* LISTA OPINII */
+        .reviews-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 2px inset #fff;
+            background: #fff;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        
+        /* Wygląd formularza Django */
+        .django-form input, .django-form textarea { width: 100%; box-sizing: border-box; }
+        .django-form textarea { height: 50px; resize: none; border: 2px inset #fff; }
+        .django-form input { border: 2px inset #fff; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div style="background:navy; color:#fff; padding:3px 5px; font-weight:bold; display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+        <span>Info: {{ product.name }}</span>
+        <a href="{% url 'product-list-html' %}" style="background:#c0c0c0; color:black; text-decoration:none; padding:0 5px; border:1px outset #fff; font-family:sans-serif; font-size:11px; line-height: 14px;">X</a>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab">Szczegóły Produktu & Opinie</div>
+    </div>
+    
+    <div class="content-box">
+        <div class="layout-table">
+            
+            <div class="left-panel">
+                <div class="img-container">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    {% else %}
+                        <div style="color: #ccc; font-size: 10px; text-align: center;">[ BRAK ZDJĘCIA ]</div>
+                    {% endif %}
+                </div>
+                
+                <h1 style="font-size: 14px; margin: 0 0 10px 0; background: navy; color: white; padding: 2px;">{{ product.name }}</h1>
+
+                <div class="prop-row"><div class="prop-label">Cena:</div><div class="prop-value">{{ product.price }} PLN</div></div>
+                <div class="prop-row"><div class="prop-label">Rozmiar:</div><div class="prop-value">{{ product.get_size_display }}</div></div>
+                <div class="prop-row"><div class="prop-label">Materiał:</div><div class="prop-value">{{ product.get_fabric_display }}</div></div>
+                <div class="prop-row"><div class="prop-label">Opis:</div>
+                    <div class="prop-value" style="height: 60px; overflow-y: auto; font-weight: normal;">{{ product.description }}</div>
+                </div>
+
+                <div style="margin-top: auto; padding-top: 10px;">
+                    <a href="{% url 'add-to-cart' product.id %}" class="btn" style="width: 100%; font-weight: bold;">
+                        DODAJ DO KOSZYKA
+                    </a>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                
+                <div style="border: 1px solid gray; background: #dfdfdf; padding: 5px; margin-bottom: 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <strong>Średnia ocena:</strong>
+                    <div>
+                        <span style="background: yellow; border: 1px solid black; padding: 1px 5px; font-weight: bold;">
+                            {% if average_rating %}{{ average_rating|floatformat:1 }}{% else %}-{% endif %}
+                        </span> / 5.0
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div style="background: #e0e0e0; border: 1px dotted gray; padding: 5px; margin-bottom: 8px;">
+                    <form method="post" class="django-form">
+                        {% csrf_token %}
+                        <div style="font-size: 11px; margin-bottom: 3px; font-weight: bold;">Dodaj opinię:</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                            <label style="font-size: 11px;">Ocena (1-5):</label>
+                            {{ form.rating }}
+                        </div>
+                        {{ form.content }}
+                        <div style="text-align: right; margin-top: 3px;">
+                            <button type="submit" class="btn" style="padding: 2px 8px;">Wyślij</button>
+                        </div>
+                    </form>
+                </div>
+                {% else %}
+                    <div style="text-align: center; font-size: 11px; margin-bottom: 10px; color: navy;">Zaloguj się, aby dodać recenzję.</div>
+                {% endif %}
+
+                <div style="font-size: 11px; font-weight: bold;">Ostatnie opinie ({{ reviews.count }}):</div>
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                        <div style="border-bottom: 1px dotted #808080; padding: 5px; margin-bottom: 5px;">
+                            <div style="display: flex; justify-content: space-between; color: navy; font-weight: bold; font-size: 11px;">
+                                <span>{{ review.user.username }}</span>
+                                <span>{{ review.rating }}/5</span>
+                            </div>
+                            <div style="font-size: 11px; margin-top: 2px;">{{ review.content }}</div>
+                            <div style="text-align: right; font-size: 9px; color: #666;">{{ review.created_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    {% empty %}
+                        <div style="text-align: center; padding: 20px; color: gray; font-size: 11px;">Brak opinii dla tego produktu.</div>
+                    {% endfor %}
+                </div>
+
+                {% if reviews.paginator.num_pages > 1 %}
+                    <div style="text-align: center; font-size: 10px; margin-top: 5px;">
+                        Strona {{ reviews.number }} z {{ reviews.paginator.num_pages }}
+                        <br>
+                        {% if reviews.has_previous %}<a href="?page={{ reviews.previous_page_number }}">&laquo; poprz.</a>{% endif %}
+                        |
+                        {% if reviews.has_next %}<a href="?page={{ reviews.next_page_number }}">nast. &raquo;</a>{% endif %}
+                    </div>
+                {% endif %}
+
+            </div> </div> </div> </div>
+
+</body>
+</html>

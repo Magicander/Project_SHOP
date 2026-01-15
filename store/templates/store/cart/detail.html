@@ -1,47 +1,85 @@
-<h1>Twój Koszyk</h1>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Twój Koszyk</title>
+    <style>
+        body { background-color: #008080; font-family: 'MS Sans Serif', Arial, sans-serif; padding: 20px; }
+        .window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 2px; max-width: 800px; margin: 0 auto; }
+        .title-bar { background: linear-gradient(90deg, #000080, #1084d0); color: white; padding: 4px; font-weight: bold; }
+        .content { padding: 15px; }
 
-<a href="{% url 'product-list-html' %}"><-- Wróć do sklepu</a>
-<hr>
+        table { width: 100%; background: #fff; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; margin-top: 10px; border-collapse: collapse; }
+        th { background: #c0c0c0; border: 1px solid #808080; padding: 5px; text-align: left; }
+        td { border: 1px dotted #ccc; padding: 5px; }
 
-{% if cart.cart_items.exists %}
-    <table border="1" width="100%">
-        <thead>
-            <tr>
-                <th>Produkt</th>
-                <th>Cena jedn.</th>
-                <th>Ilość</th>
-                <th>Suma</th>
-                <th>Usuń</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart.cart_items.all %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.product.price }} PLN</td>
-                <td>{{ item.quantity }} szt.</td>
-                <td>{{ item.get_total_price }} PLN</td>
-                
-                <td style="text-align: center;">
-                    <a href="{% url 'remove-from-cart' item.id %}" 
-                       style="color: red; text-decoration: none; font-weight: bold;">
-                        [X]
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        .btn { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 5px 15px; text-decoration: none; color: black; display: inline-block; cursor: pointer; }
+        .btn:active { border-color: #404040 #fff #fff #404040; transform: translate(1px, 1px); }
+        
+        .total-box { background: #fff; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 10px; margin-top: 20px; text-align: right; font-family: 'Courier New', monospace; }
+    </style>
+</head>
+<body>
 
-    <h3 style="text-align: right;">
-        Do zapłaty: {{ cart.get_total_cart_price }} PLN
-    </h3>
-    
-    <div style="text-align: right;">
-        <button style="background-color: orange; font-size: 1.2em;">PRZEJDŹ DO KASY</button>
+<div class="window">
+    <div class="title-bar">Koszyk.exe</div>
+    <div class="content">
+        <h1>Twój Koszyk</h1>
+
+        <a href="{% url 'product-list-html' %}" class="btn"><-- Wróć do sklepu</a>
+        <hr style="border: 0; border-bottom: 1px solid #fff; border-top: 1px solid #808080; margin: 15px 0;">
+
+        {% if cart.cart_items.exists %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Produkt</th>
+                        <th>Cena jedn.</th>
+                        <th>Ilość</th>
+                        <th>Suma</th>
+                        <th>Usuń</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart.cart_items.all %}
+                    <tr>
+                        <td><b>{{ item.product.name }}</b></td>
+                        <td>{{ item.product.price }} PLN</td>
+                        <td>{{ item.quantity }} szt.</td>
+                        <td>{{ item.get_total_price }} PLN</td>
+                        
+                        <td style="text-align: center;">
+                            <a href="{% url 'remove-from-cart' item.id %}" 
+                               class="btn" style="color: red; padding: 0 5px; font-weight: bold;">
+                                X
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="total-box">
+                <h3 style="margin: 0;">Do zapłaty: {{ cart.get_total_cart_price }} PLN</h3>
+            </div>
+            
+            <div style="text-align: right; margin-top: 20px;">
+                <a href="{% url 'checkout' %}" class="btn" style="font-weight: bold; font-size: 1.1em;">
+                    PRZEJDŹ DO KASY >>
+                </a>
+            </div>
+
+        {% else %}
+            <div style="text-align: center; padding: 40px;">
+                <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-4.png" style="width: 48px;">
+                <p>Twój koszyk jest pusty :(</p>
+                <a href="{% url 'product-list-html' %}" class="btn">Idź na zakupy!</a>
+            </div>
+        
+        {% endif %} 
+        
     </div>
+</div>
 
-{% else %}
-    <p>Twój koszyk jest pusty :(</p>
-    <a href="{% url 'product-list-html' %}">Idź na zakupy!</a>
-{% endif %}
+</body>
+</html>

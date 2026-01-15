@@ -1,3 +1,74 @@
-<h1>Witaj w Fashion Shop!</h1>
-<p>To jest strona główna naszego sklepu.</p>
-<a href="{% url 'product-list-html' %}">Przejdź do listy produktów</a>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Fashion Shop 98</title>
+    <style>
+        body {
+            background-color: #008080; /* Klasyczny morski Windowsa */
+            font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .window {
+            background-color: #c0c0c0;
+            width: 400px;
+            border: 2px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            box-shadow: 2px 2px 0px #000;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            padding: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title-bar-text {
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding-left: 2px;
+        }
+        .window-body {
+            padding: 20px;
+            text-align: center;
+        }
+        a.button {
+            display: inline-block;
+            background: #c0c0c0;
+            padding: 5px 15px;
+            border: 2px solid;
+            border-color: #fff #404040 #404040 #fff;
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        a.button:active {
+            border-color: #404040 #fff #fff #404040;
+        }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">
+        <div class="title-bar-text">Fashion Shop.exe</div>
+        <div style="background:#c0c0c0; width:16px; height:14px; border:1px solid #fff; border-right-color:#000; border-bottom-color:#000; font-size:10px; line-height:12px; text-align:center;">x</div>
+    </div>
+    <div class="window-body">
+        <h1>Witaj w Fashion Shop!</h1>
+        <p>To jest strona główna naszego sklepu.</p>
+        <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png" style="width: 48px; margin: 10px;">
+        <br>
+        <a href="{% url 'product-list-html' %}" class="button">Przejdź do listy produktów</a>
+    </div>
+</div>
+
+</body>
+</html>

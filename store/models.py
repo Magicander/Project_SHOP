@@ -108,11 +108,22 @@ class Product(models.Model):
         ordering = ['-created_at']
 
 class Cart(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    class Status(models.TextChoices):
+        WAITING = 'waiting', 'Oczekujące na wpłatę'
+        PROCESSING = 'processing', 'W realizacji'
+        SHIPPED = 'shipped', 'Wysłane'
+        DELIVERED = 'delivered', 'Dostarczone'
+        CANCELLED = 'cancelled', 'Anulowane'
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
     created_at = models.DateTimeField(auto_now_add=True)
+    is_ordered = models.BooleanField(default=False, verbose_name="Czy kupione?")
+    ordered_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=20,choices=Status.choices,default=Status.WAITING)
 
     def __str__(self):
-        return f"Koszyk użytkownika: {self.user.username}"
+        if self.is_ordered:
+            return f"Zamówienie {self.id} ({self.get_status_display()}) - {self.user.username}"
+        return f"Koszyk {self.user.username}"
     
     def get_total_cart_price(self):
         total = 0
@@ -130,3 +141,12 @@ class CartItem(models.Model):
     
     def get_total_price(self):
         return self.product.price * self.quantity
+class Review(models.Model):
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=5, choices=[(i, str(i)) for i in range(1, 6)])
+    content = models.TextField(verbose_name="Opinia")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} ({self.rating}/5)"

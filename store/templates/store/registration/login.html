@@ -1,7 +1,45 @@
-<h2>Zaloguj się</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Wejdź</button>
-</form>
-<p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Logowanie</title>
+    <style>
+        body { background: #008080; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'MS Sans Serif', sans-serif; }
+        .login-window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; width: 350px; padding: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .title-bar { background: #000080; color: white; padding: 4px; font-weight: bold; margin-bottom: 15px; }
+        .content { padding: 10px 20px 20px 20px; }
+        
+        /* Stylizacja inputów Django */
+        input { width: 95%; margin-bottom: 10px; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 3px; }
+        label { display: block; margin-bottom: 5px; font-size: 12px; }
+        
+        button { float: right; padding: 5px 15px; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; background: #c0c0c0; font-weight: bold; cursor: pointer; }
+        button:active { border-color: #404040 #fff #fff #404040; }
+        
+        .footer { margin-top: 40px; font-size: 12px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="login-window">
+    <div class="title-bar">Autoryzacja Użytkownika</div>
+    <div class="content">
+        <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+            <img src="https://win98icons.alexmeub.com/icons/png/keys-4.png" style="width: 32px; margin-right: 15px;">
+            <div style="width: 100%;">
+                <p style="margin-top: 0; font-size: 12px; margin-bottom: 10px;">Wpisz nazwę użytkownika i hasło, aby uzyskać dostęp do sklepu.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">OK</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
