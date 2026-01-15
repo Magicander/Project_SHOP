@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytor Produktu</title>
+    <style>
+        body { background: #008080; font-family: 'MS Sans Serif', sans-serif; padding: 20px; }
+        .window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 3px; width: 500px; margin: 0 auto; }
+        .title-bar { background: #000080; color: white; padding: 4px; font-weight: bold; }
+        .inner { padding: 15px; }
+
+        form p { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        label { font-size: 12px; margin-right: 10px; }
+        input, select, textarea { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 3px; flex-grow: 1; font-family: inherit;}
+        
+        button { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 5px 20px; font-weight: bold; cursor: pointer; float: right; margin-top: 10px; }
+        button:active { border-color: #404040 #fff #fff #404040; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">Dodaj/Edytuj Koszulkę</div>
+    <div class="inner">
+        <h1 style="font-size: 18px; margin-top: 0;">Konfiguracja produktu</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div style="overflow: hidden;">
+                <button type="submit">Zapisz</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

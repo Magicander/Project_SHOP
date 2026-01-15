@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Rejestracja</title>
+    <style>
+        body { background: #008080; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'MS Sans Serif', sans-serif; }
+        .window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; width: 450px; padding: 2px; }
+        .title-bar { background: #000080; color: white; padding: 4px; font-weight: bold; }
+        
+        .sidebar { background: #fff; width: 100px; height: 100%; border: 2px inset #fff; float: left; margin-right: 10px; text-align: center; padding-top: 20px; }
+        .content { padding: 20px; overflow: hidden;}
+        
+        input { width: 90%; margin-bottom: 5px; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; }
+        
+        .btn-box { margin-top: 20px; border-top: 1px solid #808080; padding-top: 10px; text-align: right; }
+        button { padding: 5px 15px; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">Kreator nowego użytkownika</div>
+    <div style="padding: 10px;">
+        <div style="display: flex;">
+            <div style="width: 80px; text-align: center; padding-top: 20px;">
+                <img src="https://win98icons.alexmeub.com/icons/png/users-2.png" style="width: 48px;">
+            </div>
+            <div style="flex-grow: 1; padding-left: 10px;">
+                <h2>Załóż konto klienta</h2>
+                <p style="font-size: 12px;">Wprowadź swoje dane poniżej, aby utworzyć nowy profil w bazie danych.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    
+                    <div class="btn-box">
+                        <button type="submit" style="font-weight: bold;">Załóż konto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

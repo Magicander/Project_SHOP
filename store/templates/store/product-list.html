@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Produktów</title>
+    <style>
+        body { background-color: #008080; font-family: 'MS Sans Serif', Arial, sans-serif; padding: 20px; }
+        .window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; box-shadow: 1px 1px 0 #000; padding: 2px; }
+        .title-bar { background: #000080; color: white; padding: 3px 5px; font-weight: bold; margin-bottom: 5px; }
+        
+        /* Panel górny (User bar) */
+        .status-bar {
+            border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff;
+            padding: 8px; margin-bottom: 15px; background: #c0c0c0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* Formularze i przyciski */
+        input[type="text"] {
+            border: 2px solid #404040; border-right-color: #fff; border-bottom-color: #fff;
+            padding: 3px; font-family: inherit;
+        }
+        button, .btn {
+            background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040;
+            color: black; padding: 4px 10px; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block;
+        }
+        button:active, .btn:active { border-color: #404040 #fff #fff #404040; transform: translate(1px, 1px); }
+
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; }
+        th { background: #c0c0c0; border: 1px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 5px; text-align: left; font-size: 12px; }
+        td { border: 1px dotted #ccc; padding: 5px; color: black; }
+        
+        a { color: #000080; }
+        hr { border: 0; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">Menadżer Sklepu v1.0</div>
+    <div style="padding: 15px;">
+
+        <div class="status-bar">
+            {% if user.is_authenticated %}
+                <span>Zalogowano jako: <b>{{ user.username }}</b></span>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Wyloguj się</button>
+                </form>
+            {% else %}
+                <span>Gość</span>
+                <div>
+                    <a href="{% url 'login' %}" class="btn">Zaloguj się</a>
+                    <a href="{% url 'register' %}" class="btn">Zarejestruj się</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <h1>Lista produktów</h1>
+
+        <div style="background: #c0c0c0; border: 2px groove #fff; padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+
+            <form method="get" style="margin: 0;">
+                <label>Szukaj:</label>
+                <input type="text" name="q" placeholder="Nazwa produktu...">
+                <button type="submit">Szukaj</button>
+            </form>
+        
+            <div style="display: flex; gap: 10px;">
+                
+                <a href="{% url 'cart-detail' %}" class="btn">
+                    🛒 Twój Koszyk
+                </a>
+        
+                <a href="{% url 'profile' %}" class="btn">
+                    👤 Mój Profil
+                </a>
+                
+            </div>
+        
+        </div>
+
+        {% if user.is_staff %}
+            <a href="{% url 'product-create-html' %}" class="btn" style="width: 100%; text-align: center; margin-bottom: 10px;">[+] DODAJ NOWY PRODUKT</a>
+        {% endif %}
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Zdjęcie</th>
+                    <th>Nazwa</th>
+                    <th>Cena</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td style="text-align: center; background: #fff;">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="height: 60px; width: auto; border: 1px solid #000;">
+                        {% else %}
+                            <span style="color: gray; font-size: 0.8em;">[BRAK_IMG]</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td><b>{{ product.name }}</b></td>
+                    <td><span style="background: #000080; color: #fff; padding: 2px;">{{ product.price }} PLN</span></td>
+                    <td>
+                        <a href="{% url 'product-detail-html' product.id %}">Szczegóły</a>
+                        {% if user.is_authenticated %}
+                             | <a href="{% url 'add-to-cart' product.id %}" style="font-weight: bold; color: green;">Dodaj do Koszyka</a>
+                        {% endif %}
+                        {% if user.is_staff %}
+                             | <a href="{% url 'product-delete-html' product.id %}" style="color:red;">Usuń</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination" style="margin-top: 20px; text-align: center;">
+            <span class="step-links">
+                {% if products.has_previous %}
+                    <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; pierwsza</a>
+                    <a href="?page={{ products.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">poprzednia</a>
+                {% endif %}
+        
+                <span class="current">
+                    Strona {{ products.number }} z {{ products.paginator.num_pages }}.
+                </span>
+        
+                {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">następna</a>
+                    <a href="?page={{ products.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">ostatnia &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

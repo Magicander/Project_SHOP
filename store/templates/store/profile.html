@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Użytkownika</title>
+    <style>
+        body { background-color: #008080; font-family: 'MS Sans Serif', Arial, sans-serif; padding: 20px; }
+        .window { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 2px; max-width: 900px; margin: 0 auto; }
+        .title-bar { background: linear-gradient(90deg, #000080, #1084d0); color: white; padding: 4px; font-weight: bold; display: flex; justify-content: space-between; }
+        .content { padding: 15px; }
+
+        /* Styl dla grupowania (Fieldset) - klasyczny wygląd Windows */
+        fieldset { border: 2px groove #fff; margin-bottom: 20px; padding: 10px; }
+        legend { padding: 0 5px; font-weight: bold; }
+
+        .btn { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 5px 15px; text-decoration: none; color: black; display: inline-block; cursor: pointer; margin-right: 5px; }
+        .btn:active { border-color: #404040 #fff #fff #404040; transform: translate(1px, 1px); }
+
+        table { width: 100%; border-collapse: collapse; background: #fff; border: 2px inset #fff; }
+        th { background: #c0c0c0; border: 1px solid #808080; padding: 5px; text-align: left; }
+        td { border: 1px dotted #ccc; padding: 5px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">
+        <span>Panel Sterowania: {{ user.username }}</span>
+        <span>X</span>
+    </div>
+    <div class="content">
+        
+        <a href="{% url 'product-list-html' %}" class="btn"><-- Wróć do sklepu</a>
+        <br><br>
+
+        <fieldset>
+            <legend>Informacje o użytkowniku</legend>
+            <div style="display: flex; align-items: center;">
+                <img src="https://win98icons.alexmeub.com/icons/png/user_computer-2.png" style="width: 48px; margin-right: 20px;">
+                <div>
+                    <p><b>Użytkownik:</b> {{ user.username }}</p>
+                    <p><b>Imię i Nazwisko:</b> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p><b>E-mail:</b> {{ user.email }}</p>
+                    <p><b>Data dołączenia:</b> {{ user.date_joined|date:"d-m-Y" }}</p>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Historia Zamówień</legend>
+            {% if orders %}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Data</th>
+                            <th style="width: 10%;">Nr</th>
+                            <th style="width: 55%;">Zakupione produkty</th> 
+                            <th style="width: 20%;">Kwota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr style="vertical-align: top;"> <td>{{ order.ordered_at|date:"d.m.Y" }}<br><small>{{ order.ordered_at|date:"H:i" }}</small></td>
+                            <td>
+                                <span class="badge 
+                                    {% if order.status == 'delivered' %}bg-success
+                                    {% elif order.status == 'shipped' %}bg-primary
+                                    {% elif order.status == 'cancelled' %}bg-danger
+                                    {% else %}bg-warning{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                            <td>#{{ order.id }}</td>
+                            
+                            <td style="background: #fff;">
+                                <ul style="margin: 0; padding-left: 20px; list-style-type: square;">
+                                    {% for item in order.cart_items.all %}
+                                        <li>
+                                            <b>{{ item.product.name }}</b> 
+                                            <span style="color: #555;">(x{{ item.quantity }})</span>
+                                            <small style="color: #888;">- {{ item.product.price }} PLN/szt</small>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                
+                            <td style="font-weight: bold; text-align: right;">
+                                {{ order.get_total_cart_price }} PLN
+                                <div style="color: green; font-size: 0.8em; margin-top: 5px;">[ZAPŁACONE]</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Brak zamówień w historii.</p>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            <legend>Twoje Recenzje</legend>
+            {% if reviews %}
+                <div style="max-height: 200px; overflow-y: auto; background: white; border: 2px inset #fff; padding: 5px;">
+                    {% for review in reviews %}
+                    <div style="border-bottom: 1px dotted #ccc; padding: 5px 0;">
+                        <b>{{ review.product.name }}</b> 
+                        <span style="color: #000080;">(Ocena: {{ review.rating }}/5)</span>
+                        <br>
+                        <i style="color: #555;">"{{ review.content|truncatechars:80 }}"</i>
+                        <br>
+                        <small style="color: #888;">{{ review.created_at|date:"d.m.Y" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Nie dodałeś jeszcze żadnej opinii.</p>
+            {% endif %}
+        </fieldset>
+
+    </div>
+</div>
+
+</body>
+</html>

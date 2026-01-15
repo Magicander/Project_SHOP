@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Potwierdź usunięcie</title>
+    <style>
+        body { background: #008080; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'MS Sans Serif', sans-serif; }
+        .dialog { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; width: 400px; padding: 2px; }
+        .title-bar { background: #000080; color: white; padding: 3px; font-weight: bold; display: flex; justify-content: space-between; }
+        .inner { padding: 20px; display: flex; align-items: center; }
+        .actions { text-align: center; margin-top: 10px; padding-bottom: 10px; }
+        
+        button { min-width: 80px; padding: 4px; margin: 0 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; cursor: pointer;}
+        button:active { border-color: #404040 #fff #fff #404040; }
+        .btn-cancel { text-decoration: none; color: black; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 3px 10px; font-size: 13.33px; display: inline-block; background: #c0c0c0;}
+    </style>
+</head>
+<body>
+
+<div class="dialog">
+    <div class="title-bar">
+        <span>Ostrzeżenie</span>
+        <span>X</span>
+    </div>
+    <div class="inner">
+        <img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width: 32px; margin-right: 20px;">
+        <div>
+            <h3 style="margin: 0; font-size: 14px;">Czy na pewno chcesz usunąć {{ shirt.name }}?</h3>
+            <p style="font-size: 12px;">Tej operacji nie można cofnąć.</p>
+        </div>
+    </div>
+    <div class="actions">
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="font-weight: bold;">TAK</button>
+        </form>
+        <a href="{% url 'product-list-html' %}" class="btn-cancel">Anuluj</a>
+    </div>
+</div>
+
+</body>
+</html>
