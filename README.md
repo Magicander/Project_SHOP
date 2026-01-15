@@ -6,13 +6,6 @@
 ![Django](https://img.shields.io/badge/Django-4.x-green?style=flat-square&logo=django)
 ![CSS](https://img.shields.io/badge/Style-Retro-gray?style=flat-square)
 
-## 📸 Zrzuty ekranu
-
-*(Tutaj wstaw screeny swojego sklepu. Zrób zrzut ekranu strony głównej i szczegółów produktu, wrzuć je do folderu, a potem podmień linki poniżej)*
-
-![Ekran Główny](https://via.placeholder.com/800x400?text=Tu+wstaw+screen+strony+glownej)
-*Widok listy produktów w stylu okienkowym.*
-
 ## ⚙️ Funkcjonalności
 
 Aplikacja posiada w pełni działający backend e-commerce ukryty pod warstwą retro interfejsu:
