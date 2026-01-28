@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('products/', views.ProductList.as_view(), name='product-list'),
-    path('products/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),
+    path('products/<int:id>/', views.ProductDetail.as_view(), name='product-detail'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('welcome/', views.welcome_view, name='welcome'),
     path('html/products/', views.product_list_html, name='product-list-html'),
@@ -20,4 +20,6 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', views.remove_from_cart_view, name='remove-from-cart'),
     path('checkout/', views.checkout, name='checkout'),
     path('profile/', views.profile_view, name='profile'),
+    path('api/reviews/', views.ReviewList.as_view(), name='api-review-list'),
+    path('api/reviews/<int:id>/', views.ReviewDetail.as_view(), name='api-review-detail'),
 ]
